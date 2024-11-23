@@ -11,7 +11,7 @@ public class Student {
     String major;
     double gba;
     byte [] CV;
-
+    
     public Student() {
     }
 
