@@ -25,7 +25,7 @@ public class StudentDatabaseCon {
 	}
 
 	// data retrieval
-	protected void login(int nid, String spassword) throws SQLException {
+	protected ResultSet login(int nid, String spassword) throws SQLException {
 		String cheackAccount = "Select * from student where nid = ? and stu_password = ?";
 		try (PreparedStatement cheackAccountPrep = connection.prepareStatement(cheackAccount)) {
 			cheackAccountPrep.setInt(1, nid);
@@ -33,8 +33,9 @@ public class StudentDatabaseCon {
 			ResultSet resultLogin = cheackAccountPrep.executeQuery();
 			if (resultLogin.next()) {
 				System.out.println("User Found");
+				return resultLogin;
 			} else {
-				System.out.println("ethir the password or the user is wrong");
+				return null;
 			}
 
 		}
@@ -48,8 +49,8 @@ public class StudentDatabaseCon {
 			getFullName.setInt(1, nid);
 			ResultSet resultFullName = getFullName.executeQuery();
 			if (resultFullName.next()) {
-				fullNameSb.append(resultFullName.getString("fname") + " " + resultFullName.getString("mname") + " "
-						+ resultFullName.getString("gname") + " " + resultFullName.getString("lname"));
+				fullNameSb.append(resultFullName.getString("fname") + " " + resultFullName.getString("mname")  
+				+ " " + resultFullName.getString("lname"));
 			}
 		}
 		String fullName = fullNameSb.toString();
@@ -82,7 +83,6 @@ public class StudentDatabaseCon {
 				major = majorResult.getString("major");
 			} else {
 				major = "";
-
 			}
 
 		}
@@ -121,7 +121,6 @@ public class StudentDatabaseCon {
 				cv = cvResult.getBlob("cv");
 			} else {
 				cv = null;
-
 			}
 
 		}
@@ -134,38 +133,25 @@ public class StudentDatabaseCon {
 		try(PreparedStatement updateFname = connection.prepareStatement(firstNameStatment)){
 			updateFname.setString(1, fname);
 			updateFname.setInt(2, nid);
-			ResultSet updateFnameResult = updateFname.executeQuery();		
+			updateFname.executeUpdate();		
 			}
-
 	}
-
 	protected void editMiddleName(int nid, String mname) throws SQLException {
 		// Make sure that it is the user profile
 		String middleNameStatment = "update student set mname = ? where nid = ?";
 		try(PreparedStatement updateGname = connection.prepareStatement(middleNameStatment)){
 			updateGname.setString(1, mname);
 			updateGname.setInt(2, nid);
-			ResultSet updateGnameResult = updateGname.executeQuery();		
+			updateGname.executeUpdate();		
 			}
 	}
-
-	protected void editGrandpaName(int nid,String gname) throws SQLException {
-		// Make sure that it is the user profile
-		String grandpaNameStatment = "update student set gname = ? where nid = ?";
-		try(PreparedStatement updateGname = connection.prepareStatement(grandpaNameStatment)){
-			updateGname.setString(1, gname);
-			updateGname.setInt(2, nid);
-			ResultSet updateGnameResult = updateGname.executeQuery();		
-			}
-	}
-
 	protected void editLastName(int nid,String lname) throws SQLException {
 		// Make sure that it is the user profile
 		String lastStatment = "update student set lname = ? where nid = ?";
 		try(PreparedStatement updateFname = connection.prepareStatement(lastStatment)){
 			updateFname.setString(1, lname);
 			updateFname.setInt(2, nid);
-			ResultSet updateFnameResult = updateFname.executeQuery();		
+			updateFname.executeUpdate();		
 			}
 	}
 
@@ -175,21 +161,33 @@ public class StudentDatabaseCon {
 		try(PreparedStatement updatePassword = connection.prepareStatement(passwordStatment)){
 			updatePassword.setString(1, stuPassword);
 			updatePassword.setInt(2, nid);
-			ResultSet updatepasswordResult = updatePassword.executeQuery();		
+			updatePassword.executeUpdate();		
 			}
 	}
 
 	///// data creation //////
-	protected void signup() throws SQLException {
+	protected void signup(Student student) throws SQLException {
 		// Make sure that the user didn't exist
 		String cheackAccount = "Select * from student where nid = ?";
 		try (PreparedStatement cheackAccountPrep = connection.prepareStatement(cheackAccount)) {
-			cheackAccountPrep.setInt(0, 0);
+			cheackAccountPrep.setInt(1,student.getNid());
 			ResultSet resultLogin = cheackAccountPrep.executeQuery();
 			if (!resultLogin.next()) {
-				String insertIntoTable = "INSERT INTO student"
-						+ "(id,fname,mname,gname,lname,email,major,gba,stu_password) values"
-						+ "(?,?,?,?,?,?,?,?,?)";
+				String insertIntoTableStat = "INSERT INTO student "
+						+ "(nid,fname,mname,lname,email,major,gba,stu_password) values"
+						+ "(?,?,?,?,?,?,?,?)";
+				try(PreparedStatement insertIntoTable = connection.prepareStatement(insertIntoTableStat)){
+					insertIntoTable.setInt(1,student.getNid());
+					insertIntoTable.setString(2,student.getFirstName());
+					insertIntoTable.setString(3,student.getMiddleName());
+					insertIntoTable.setString(4,student.getLastName());
+					insertIntoTable.setString(5,student.getEmail());
+					insertIntoTable.setString(6,student.getMajor());
+					insertIntoTable.setDouble(7, student.getGba());
+					insertIntoTable.setString(8, student.getPassword());
+					insertIntoTable.executeUpdate();
+
+				}
 			} else {
 				System.out.println("User already exsit");
 			}
@@ -205,8 +203,18 @@ public class StudentDatabaseCon {
 			SerialBlob cvBlob = new SerialBlob(cv);
 			uploadCV.setBlob(1, cvBlob);
 			uploadCV.setInt(2, nid);
-			ResultSet uploadResult = uploadCV.executeQuery();		
+			uploadCV.executeUpdate();		
 			}
+		
+	}
+	protected void applyForInternship(int nid,int internshipid) throws SQLException {
+		String applyStatement = "insert into student_internship (nid,internId,status) values(?, ? , ?)";
+		try(PreparedStatement apply = connection.prepareStatement(applyStatement)){
+			apply.setInt(1, nid);
+			apply.setInt(2, internshipid);
+			apply.setString(3, "No info");
+			apply.executeUpdate();
+		}
 		
 	}
 }

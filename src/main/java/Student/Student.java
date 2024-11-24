@@ -1,21 +1,41 @@
 package Student;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Student {
     int nid;
     String firstName;
     String middleName;
-    String grandfatherName;
     String lastName;
     String email;
     String password;
     String major;
     double gba;
     byte [] CV;
-    
-    public Student() {
+    StudentDatabaseCon databaseCon;
+    public Student() throws SQLException {
+        databaseCon = new StudentDatabaseCon();
     }
+    public void login(int nid, String password) throws SQLException {
+    	ResultSet resultLogin= databaseCon.login(nid, password);
+    	if(resultLogin != null) {
+    	this.firstName = resultLogin.getString("fname");
+    	this.middleName = resultLogin.getString("mname");
+    	this.lastName = resultLogin.getString("lname");
+    	this.email = resultLogin.getString("email");
+    	this.password = resultLogin.getString("stu_password");
+    	this.major = resultLogin.getString("major");
+    	this.gba = resultLogin.getDouble("gba");
+    	}
+    	else {
+			System.out.println("ethir the password or the user is wrong");
 
-
+    	}
+    }
+    public void signin() throws SQLException {
+    	databaseCon.signup(this);
+    }
     public int getNid() {
         return nid;
     }
@@ -34,14 +54,6 @@ public class Student {
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
-    }
-
-    public String getGrandfatherName() {
-        return grandfatherName;
-    }
-
-    public void setGrandfatherName(String grandfatherName) {
-        this.grandfatherName = grandfatherName;
     }
 
     public String getLastName() {
