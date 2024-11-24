@@ -25,7 +25,7 @@ public class StudentDatabaseCon {
 	}
 
 	// data retrieval
-	protected ResultSet login(int nid, String spassword) throws SQLException {
+	protected Student login(int nid, String spassword) throws SQLException {
 		String cheackAccount = "Select * from student where nid = ? and stu_password = ?";
 		try (PreparedStatement cheackAccountPrep = connection.prepareStatement(cheackAccount)) {
 			cheackAccountPrep.setInt(1, nid);
@@ -33,7 +33,15 @@ public class StudentDatabaseCon {
 			ResultSet resultLogin = cheackAccountPrep.executeQuery();
 			if (resultLogin.next()) {
 				System.out.println("User Found");
-				return resultLogin;
+				Student student = new Student(resultLogin.getInt("nid"));
+				student.setFirstName(resultLogin.getString("fname"));
+		    	student.setMiddleName(resultLogin.getString("mname"));
+		    	student.setLastName(resultLogin.getString("lname"));
+		    	student.setEmail(resultLogin.getString("email"));
+		    	student.setPassword(resultLogin.getString("stu_password"));
+		    	student.setMajor(resultLogin.getString("major"));
+		    	student.setGba(resultLogin.getDouble("gba"));
+				return student;
 			} else {
 				return null;
 			}

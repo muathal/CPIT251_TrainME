@@ -17,23 +17,27 @@ public class Student {
     public Student() throws SQLException {
         databaseCon = new StudentDatabaseCon();
     }
+    public Student(int nid) {
+    	this.nid = nid;
+    }
     public void login(int nid, String password) throws SQLException {
-    	ResultSet resultLogin= databaseCon.login(nid, password);
+    	Student resultLogin= databaseCon.login(nid, password);
     	if(resultLogin != null) {
-    	this.firstName = resultLogin.getString("fname");
-    	this.middleName = resultLogin.getString("mname");
-    	this.lastName = resultLogin.getString("lname");
-    	this.email = resultLogin.getString("email");
-    	this.password = resultLogin.getString("stu_password");
-    	this.major = resultLogin.getString("major");
-    	this.gba = resultLogin.getDouble("gba");
+    	this.firstName = resultLogin.getFirstName();
+    	this.middleName = resultLogin.getMiddleName();
+    	this.lastName = resultLogin.getLastName();
+    	this.email = resultLogin.getEmail();
+    	this.password = resultLogin.getPassword();
+    	this.major = resultLogin.getMajor();
+    	this.gba = resultLogin.getGba();
+    	System.out.println("Welcome to TrainMe "+ this.firstName+" "+this.lastName);
     	}
     	else {
 			System.out.println("ethir the password or the user is wrong");
 
     	}
     }
-    public void signin() throws SQLException {
+    public void signup() throws SQLException {
     	databaseCon.signup(this);
     }
     public int getNid() {
@@ -84,7 +88,10 @@ public class Student {
         return major;
     }
 
-    public void setMajor(String major) {
+    public void setNid(int nid) {
+		this.nid = nid;
+	}
+	public void setMajor(String major) {
         this.major = major;
     }
 
