@@ -17,7 +17,7 @@ public class StudentDatabaseCon {
 	private String username;
 	private Connection connection;
 
-	protected StudentDatabaseCon() throws SQLException {
+	 StudentDatabaseCon() throws SQLException {
 		url = "jdbc:mysql://127.0.0.1:3306/TrainMe";
 		username = "root";
 		password = "1$R2e3W4q";
@@ -32,7 +32,6 @@ public class StudentDatabaseCon {
 			cheackAccountPrep.setString(2, spassword);
 			ResultSet resultLogin = cheackAccountPrep.executeQuery();
 			if (resultLogin.next()) {
-				System.out.println("User Found");
 				Student student = new Student(resultLogin.getInt("nid"));
 				student.setFirstName(resultLogin.getString("fname"));
 		    	student.setMiddleName(resultLogin.getString("mname"));
@@ -197,11 +196,19 @@ public class StudentDatabaseCon {
 
 				}
 			} else {
-				System.out.println("User already exsit");
 			}
 
 		}
 
+	}
+	protected  boolean checkNid(int nid) throws SQLException {
+		String cheackAccount = "Select * from student where nid = ?";
+		try (PreparedStatement cheackAccountPrep = connection.prepareStatement(cheackAccount)) {
+			cheackAccountPrep.setInt(1,nid);
+			ResultSet resultLogin = cheackAccountPrep.executeQuery();
+		return resultLogin.next();
+		
+	}
 	}
 
 	protected void addCV(int nid, byte [] cv) throws SQLException {

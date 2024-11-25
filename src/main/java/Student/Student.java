@@ -20,7 +20,7 @@ public class Student {
     public Student(int nid) {
     	this.nid = nid;
     }
-    public void login(int nid, String password) throws SQLException {
+    public boolean login(int nid, String password) throws SQLException {
     	Student resultLogin= databaseCon.login(nid, password);
     	if(resultLogin != null) {
     	this.firstName = resultLogin.getFirstName();
@@ -30,15 +30,17 @@ public class Student {
     	this.password = resultLogin.getPassword();
     	this.major = resultLogin.getMajor();
     	this.gba = resultLogin.getGba();
-    	System.out.println("Welcome to TrainMe "+ this.firstName+" "+this.lastName);
+    	return true;
     	}
     	else {
-			System.out.println("ethir the password or the user is wrong");
-
+    		return false;
     	}
     }
     public void signup() throws SQLException {
     	databaseCon.signup(this);
+    }
+    public boolean check(int nid) throws SQLException {
+    	return databaseCon.checkNid(nid);
     }
     public int getNid() {
         return nid;
