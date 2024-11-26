@@ -22,7 +22,7 @@ public class StudentApp {
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.setBackground(new Color(240, 248, 255));
+        panel.setBackground(new Color(255, 87, 51));
 
         JLabel background = createBackgroundLabel();
         panel.add(background);
@@ -174,7 +174,18 @@ public class StudentApp {
 				e1.printStackTrace();
 			}
         });
-
+        JButton loginButton = new JButton("Log In");
+        loginButton.setBounds(250, 550, 100, 30);
+        background.add(loginButton);
+        loginButton.addActionListener(e -> {
+            signupFrame.dispose();
+            try {
+				createLoginPage("", "");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        });
         signupFrame.add(panel);
         signupFrame.setVisible(true);
     }
@@ -231,7 +242,13 @@ public class StudentApp {
 				e1.printStackTrace();
 			}
         });
-
+        JButton signupButton = new JButton("Sign Up");
+        signupButton.setBounds(250, 350, 100, 30);
+        background.add(signupButton);
+        signupButton.addActionListener(e -> {
+        loginFrame.dispose(); // Close the login frame
+        createSignupPage(); // Navigate back to the signup page
+        });
         loginFrame.add(panel);
         loginFrame.setVisible(true);
     }
@@ -286,7 +303,21 @@ public void createHomePage(String userName, String userMajor) {
         background.add(joinButton);
         y += 50;
     }
+    // Add Log Out button
+    JButton logoutButton = new JButton("Log Out");
+    logoutButton.setBounds(250, 550, 100, 30);
+    background.add(logoutButton);
 
+    // Log Out button action listener
+    logoutButton.addActionListener(e -> {
+        homeFrame.dispose(); // Close the Home Page
+        try {
+			createLoginPage(userName, userMajor);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} // Navigate back to the Login Page
+    });
     homeFrame.add(panel);
     homeFrame.setVisible(true);
 }
@@ -333,6 +364,7 @@ public void createDetailsPage(String[] details, String userName, String userMajo
         JOptionPane.showMessageDialog(detailsFrame,
                 "Your request has been submitted. We will contact you via email.");
         detailsFrame.dispose();
+        
         createHomePage(userName, userMajor); // Reopen the home page
     });
     background.add(joinButton);
