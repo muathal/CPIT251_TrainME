@@ -20,7 +20,7 @@ public class StudentDatabaseCon {
 	 StudentDatabaseCon() throws SQLException {
 		url = "jdbc:mysql://127.0.0.1:3306/TrainMe";
 		username = "root";
-		password = "1$R2e3W4q";
+		password = "";
 		this.connection = DriverManager.getConnection(url, username, password);
 	}
 
